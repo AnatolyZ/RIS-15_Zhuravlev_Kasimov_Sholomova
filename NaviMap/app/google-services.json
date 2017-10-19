@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "292832612011",
+    "firebase_url": "https://navimapv3.firebaseio.com",
+    "project_id": "navimapv3",
+    "storage_bucket": "navimapv3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292832612011:android:c3a1adfd88b3724e",
+        "android_client_info": {
+          "package_name": "com.example.navimapv3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292832612011-a6mp39jgeaq64mifrlh6lo27cqnp4tl4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.navimapv3",
+            "certificate_hash": "b822725ba834ebfac6b04498f8e15e87f84d1d9d"
+          }
+        },
+        {
+          "client_id": "292832612011-tq5ctg8oli85gbimdfenssleh1gr208m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdEL6IhRZsoB-sfUB2RhCPaAdm9Tm8phg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292832612011-tq5ctg8oli85gbimdfenssleh1gr208m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

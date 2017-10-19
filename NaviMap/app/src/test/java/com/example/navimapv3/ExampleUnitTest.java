@@ -1,4 +1,4 @@
-package com.example.navimap;
+package com.example.navimapv3;
 
 import org.junit.Test;
 

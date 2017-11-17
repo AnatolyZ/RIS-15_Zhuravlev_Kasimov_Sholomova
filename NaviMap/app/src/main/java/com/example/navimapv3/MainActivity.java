@@ -12,16 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-//import com.google.firebase.auth.FirebaseAuth;
-
+import com.google.android.gms.maps.GoogleMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    //private FirebaseAuth mAuth;
-    //private FirebaseAuth.AuthStateListener mAuthListener;
-    //private static int SIGN_IN_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,52 +38,38 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-           /*
-          if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-              startActivityForResult(AuthUI.getInstance()
-                      .createSignInIntentBuilder()
-                      .build(), SIGN_IN_REQUEST_CODE);
-                } else {
+    }
 
-          }
-          */
+    /////////////////////////////////////////////////////////////////////////////////////
+    GoogleMap googleMap;
 
-         /*
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                } else {
-                    // User is signed out
+
+
+
+/*
+    private void createMapView(){
+
+        try {
+            if(null == googleMap){
+                googleMap = ((MapFragment) getFragmentManager().findFragmentById(
+                        R.id.mapView)).getMap();
+
+                if(null == googleMap) {
+                    Toast.makeText(getApplicationContext(),
+                            "Error creating map",Toast.LENGTH_SHORT).show();
                 }
-                // ...
             }
-        };
-        */
-    }
-        /*
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+        } catch (NullPointerException exception){
+            Log.e("mapApp", exception.toString());
         }
     }
-            */
+*/
+    //////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onBackPressed() {
@@ -128,13 +110,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Toast.makeText(getApplicationContext(), "Продуктовые магазины", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_gallery) {
-
+            Toast.makeText(getApplicationContext(), "Заправки", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_slideshow) {
-
+            Toast.makeText(getApplicationContext(), "Кинотеатры", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
-
+            Toast.makeText(getApplicationContext(), "Аптеки", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

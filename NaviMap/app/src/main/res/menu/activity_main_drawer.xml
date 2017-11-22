@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_gallery"
-            android:title="Заправки" />
+            android:id="@+id/m_shop"
+            android:title="Продуктовый магазин" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:title="Кинотеатры" />
+            android:id="@+id/m_cinema"
+            android:title="Кинотеатр" />
         <item
-            android:id="@+id/nav_manage"
-            android:title="Аптеки" />
+            android:id="@+id/m_pharmacy"
+            android:title="Аптека" />
         <item
-            android:id="@+id/nav_camera"
-            android:title="Продуктовые магазины" />
+            android:id="@+id/m_gas"
+            android:title="Заправка" />
     </group>
+
 </menu>

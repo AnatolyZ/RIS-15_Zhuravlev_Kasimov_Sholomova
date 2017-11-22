@@ -1,4 +1,4 @@
-package com.example.navimapv3;
+package com.example.navimap;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,8 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.GoogleMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,32 +43,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    GoogleMap googleMap;
-
-
-
-
-/*
-    private void createMapView(){
-
-        try {
-            if(null == googleMap){
-                googleMap = ((MapFragment) getFragmentManager().findFragmentById(
-                        R.id.mapView)).getMap();
-
-                if(null == googleMap) {
-                    Toast.makeText(getApplicationContext(),
-                            "Error creating map",Toast.LENGTH_SHORT).show();
-                }
-            }
-        } catch (NullPointerException exception){
-            Log.e("mapApp", exception.toString());
-        }
-    }
-*/
-    //////////////////////////////////////////////////////////////////////////////////////
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -96,7 +68,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_exit) {
+            android.os.Process.killProcess(android.os.Process.myPid());
             return true;
         }
 
@@ -109,14 +82,14 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            Toast.makeText(getApplicationContext(), "Продуктовые магазины", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_gallery) {
-            Toast.makeText(getApplicationContext(), "Заправки", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_slideshow) {
-            Toast.makeText(getApplicationContext(), "Кинотеатры", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_manage) {
-            Toast.makeText(getApplicationContext(), "Аптеки", Toast.LENGTH_SHORT).show();
+        if (id == R.id.m_shop) {
+            Toast.makeText(getApplicationContext(), "Продуктовый магазин", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.m_cinema) {
+            Toast.makeText(getApplicationContext(), "Кинотеатр", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.m_pharmacy) {
+            Toast.makeText(getApplicationContext(), "Аптека", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.m_gas) {
+            Toast.makeText(getApplicationContext(), "Заправка", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

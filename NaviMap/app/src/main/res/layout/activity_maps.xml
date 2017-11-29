@@ -19,6 +19,7 @@
         tools:context="com.example.navimap.MapsActivity"/>
 
     <include
+        android:id="@+id/reg_form_include"
         layout="@layout/registraition_form"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -29,6 +30,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/signUp_Button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="onClickSignUpTestButton"
+        android:text="@string/sign_upText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 

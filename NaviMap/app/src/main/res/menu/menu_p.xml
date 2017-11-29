@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+        <item
+            android:id="@+id/menu1"
+            android:title="@string/menu_cinema"/>
+        <item
+            android:id="@+id/menu2"
+            android:title="@string/menu_gs"/>
+        <item
+            android:id="@+id/menu3"
+            android:title="@string/menu_hospital"/>
+        <item
+            android:id="@+id/menu4"
+            android:title="@string/menu_pharmacy"/>
+        <item
+            android:id="@+id/menu5"
+            android:title="@string/menu_shop"/>
+</menu>

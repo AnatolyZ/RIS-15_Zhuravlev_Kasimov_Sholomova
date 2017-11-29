@@ -1,10 +1,16 @@
 <resources>
     <string name="app_name">NaviMap</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">NaviMap</string>
     <string name="closeRegForm_ButtonText">Close</string>
     <string name="sign_upText">Sign up</string>
     <string name="sign_inText">Sign in</string>
     <string name="already_signed_upText">Already signed up?</string>
     <string name="loginText">Login</string>
     <string name="passwordText">Password</string>
+    
+    <string name="menu_cinema">Кинотеатр</string>
+    <string name="menu_shop">Магазин</string>
+    <string name="menu_gs">Заправка</string>
+    <string name="menu_pharmacy">Аптека</string>
+    <string name="menu_hospital">Больница</string>
 </resources>

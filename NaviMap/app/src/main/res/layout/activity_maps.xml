@@ -8,7 +8,10 @@
     tools:context=".MapsActivity"
 
     >
-
+     <!--
+     Лабораторная работа 1 сдана Журавлев, Касимов
+     -->
+    
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"

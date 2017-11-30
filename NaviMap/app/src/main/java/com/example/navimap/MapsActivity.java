@@ -34,6 +34,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         reg_form = findViewById(R.id.reg_form_include);
+        reg_form.setVisibility(View.INVISIBLE);
 
         Button btnChoice = (Button) findViewById(R.id.choice_Button);
         btnChoice.setOnClickListener(viewClickListener);

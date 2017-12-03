@@ -1,7 +1,15 @@
 package com.example.navimap;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +24,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 //Лабораторные работы 4,5 сданы Журавлев, Касимов
+
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,8 +39,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double lng = 0.0;
     private double lat = 0.0;
     private String nameOfPlace = "";
+    public static final String preferences_userInfo_set = "userInfo_set";
+    static Boolean isRegUsernameRight = false;
 
     ViewGroup reg_form;
+    TextInputEditText reg_username_textInput;
+    TextInputLayout reg_username_layout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +57,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         reg_form = findViewById(R.id.reg_form_include);
         reg_form.setVisibility(View.INVISIBLE);
-
+        reg_username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
+        reg_username_layout = (TextInputLayout)findViewById(R.id.reg_usernameInput);
+        Pattern p_reg_username= Pattern.compile("^[a-zA-Z]([a-zA-Z0-9]){4,19}$");
+        reg_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,reg_username_textInput,p_reg_username));
         Button btnChoice = (Button) findViewById(R.id.choice_Button);
         btnChoice.setOnClickListener(viewClickListener);
     }
@@ -128,8 +151,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void onClickSignUpButton(View view) {
-        reg_form.setVisibility(View.INVISIBLE);
+
+
+
+
+
+
+    public void onClickSignUpButton(View view)
+    {
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = sp.edit();
+        Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>());
+        TextInputEditText username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
+        String entered_username = username_textInput.getText().toString();
+        Boolean isUsed = false;
+
+        for (String s: userInfo_set)
+        {
+            String username = s.substring(0,s.indexOf("/"));
+            if (username.equals(entered_username))
+            {
+                isUsed = true;
+            }
+        }
+        if (isUsed)
+        {
+            Toast.makeText(getApplicationContext(),"Login Already Used!",Toast.LENGTH_SHORT).show();
+
+        }
+        else
+        {
+            if (isRegUsernameRight)
+            {
+                TextInputEditText password_textInput = (TextInputEditText)findViewById(R.id.reg_password_editText);
+                String userInfo = entered_username +"/"+ password_textInput.getText().toString();
+                userInfo_set.add(userInfo);
+                edit.putStringSet(preferences_userInfo_set,userInfo_set);
+                edit.apply();
+                reg_form.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"Wrong Login!",Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     public void onClickSignUpTestButton(View view) {
@@ -140,4 +206,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onClickCloseSignUpFormButton(View view) {
         reg_form.setVisibility(View.INVISIBLE);
     }
+
+    public class addListenerOnTextChange implements TextWatcher {
+        private Context mContext;
+        TextInputEditText mEdittextview;
+        Pattern p;
+
+        public addListenerOnTextChange(Context context, TextInputEditText editTextView, Pattern p) {
+            super();
+            this.mContext = context;
+            this.mEdittextview= editTextView;
+            this.p=p;
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            Matcher m = p.matcher(mEdittextview.getText().toString());
+            isRegUsernameRight = m.matches();
+            if (isRegUsernameRight)
+            {
+                mEdittextview.setError(null);
+                reg_username_layout.setErrorEnabled(false);
+            }
+            else
+            {
+                reg_username_layout.setErrorEnabled(true);
+                mEdittextview.setError("Login doesn't match pattern!");
+            }
+
+        }
+    }
 }
+

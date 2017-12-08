@@ -2,25 +2,23 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/registration_layout"
+    android:id="@+id/authorization_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
-    tools:context=".MapsActivity">
-
+    android:background="@color/colorWhite">
 
     <TextView
-        android:id="@+id/alreadySignedUpText"
+        android:id="@+id/enterText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="22dp"
-        android:text="@string/already_signed_upText"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/enterText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/reg_usernameInput"
+        android:id="@+id/auth_usernameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -29,39 +27,35 @@
         app:counterEnabled="true"
         app:counterMaxLength="20"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moveToSingInButton">
+        app:layout_constraintTop_toBottomOf="@+id/enterText">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/reg_username_editText"
+            android:id="@+id/auth_username_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/loginText"
             android:inputType="text"
             android:maxLength="20"
-            android:singleLine="true"
-
-            />
+            android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/reg_passwordInput"
+        android:id="@+id/auth_passwordInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reg_usernameInput"
         app:counterEnabled="true"
         app:counterMaxLength="20"
-
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/auth_usernameInput">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/reg_password_editText"
+            android:id="@+id/auth_password_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/passwordText"
@@ -71,38 +65,24 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/register_Button"
+        android:id="@+id/signIn_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/sign_upText"
+        android:onClick="onClickSignInButton"
+        android:text="@string/sign_inText"
         android:textSize="12sp"
-        android:onClick="onClickSignUpButton"
-        app:layout_constraintEnd_toEndOf="@+id/reg_passwordInput"
-        app:layout_constraintTop_toBottomOf="@+id/reg_passwordInput" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/auth_passwordInput" />
 
     <Button
-        android:id="@+id/closeRegForm_Button"
+        android:id="@+id/closeAuthForm_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:onClick="onClickCloseSignUpFormButton"
+        android:onClick="onClickCloseSignInFormButton"
         android:text="@string/closeForm_ButtonText"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/reg_passwordInput"
-        app:layout_constraintTop_toBottomOf="@+id/reg_passwordInput" />
-
-    <Button
-        android:id="@+id/moveToSingInButton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:onClick="onClickSignInRegFormButton"
-        android:text="@string/sign_inText"
-        android:textSize="9sp"
-        app:layout_constraintStart_toEndOf="@+id/alreadySignedUpText"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/auth_passwordInput" />
 </android.support.constraint.ConstraintLayout>
-
-

@@ -1,6 +1,5 @@
 package com.example.navimap;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -43,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     static Boolean isRegUsernameRight = false;
 
     ViewGroup reg_form;
+    ViewGroup auth_form;
     TextInputEditText reg_username_textInput;
     TextInputLayout reg_username_layout;
 
@@ -57,6 +57,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         reg_form = findViewById(R.id.reg_form_include);
         reg_form.setVisibility(View.INVISIBLE);
+        auth_form = findViewById(R.id.auth_form_include);
+        auth_form.setVisibility(View.INVISIBLE);
         reg_username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
         reg_username_layout = (TextInputLayout)findViewById(R.id.reg_usernameInput);
         Pattern p_reg_username= Pattern.compile("^[a-zA-Z]([a-zA-Z0-9]){4,19}$");
@@ -75,6 +77,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.inflate(R.menu.menu_p);
+        auth_form.setVisibility(View.INVISIBLE);
+        reg_form.setVisibility(View.INVISIBLE);
 
         popupMenu
                 .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -199,6 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onClickSignUpTestButton(View view) {
+        auth_form.setVisibility(View.INVISIBLE);
         reg_form.setVisibility(View.VISIBLE);
     }
 
@@ -206,6 +211,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onClickCloseSignUpFormButton(View view) {
         reg_form.setVisibility(View.INVISIBLE);
     }
+
+    public void onClickSignInRegFormButton(View view) {
+        reg_form.setVisibility(View.INVISIBLE);
+        auth_form.setVisibility(View.VISIBLE);
+    }
+
+    public void onClickCloseSignInFormButton(View view) { auth_form.setVisibility(View.INVISIBLE); }
+
+    public void onClickSignInButton(View view) {  }
 
     public class addListenerOnTextChange implements TextWatcher {
         private Context mContext;

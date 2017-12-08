@@ -22,6 +22,20 @@
         tools:context="com.example.navimap.MapsActivity"/>
 
     <include
+        android:id="@+id/auth_form_include"
+        layout="@layout/authorization_form"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
         android:id="@+id/reg_form_include"
         layout="@layout/registraition_form"
         android:layout_width="0dp"

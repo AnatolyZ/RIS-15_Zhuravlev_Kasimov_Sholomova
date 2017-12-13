@@ -39,14 +39,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double lat = 0.0;
     private String nameOfPlace = "";
     public static final String preferences_userInfo_set = "userInfo_set";
-    static Boolean isRegUsernameRight = false;
+    static Boolean isUsernameRight = false;
+    static Boolean isPasswordRight = false;
 
     ViewGroup reg_form;
     ViewGroup auth_form;
     TextInputEditText reg_username_textInput;
+    TextInputEditText reg_password_textInput;
     TextInputLayout reg_username_layout;
+    TextInputLayout reg_password_layout;
     TextInputEditText auth_username_textInput;
+    TextInputEditText auth_password_textInput;
     TextInputLayout auth_username_layout;
+    TextInputLayout auth_password_layout;
+
+    //static public Context mContext;
+    //static SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+    //static SharedPreferences.Editor edit = sp.edit();
+    //static Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>());
 
 
     @Override
@@ -61,13 +71,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         reg_form.setVisibility(View.INVISIBLE);
         auth_form = findViewById(R.id.auth_form_include);
         auth_form.setVisibility(View.INVISIBLE);
+
         reg_username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
         auth_username_textInput = (TextInputEditText)findViewById(R.id.auth_username_editText);
+        reg_password_textInput = (TextInputEditText)findViewById(R.id.reg_password_editText);
+        auth_password_textInput = (TextInputEditText)findViewById(R.id.auth_password_editText);
+
         reg_username_layout = (TextInputLayout)findViewById(R.id.reg_usernameInput);
         auth_username_layout = (TextInputLayout)findViewById(R.id.auth_usernameInput);
-        Pattern p_reg_username= Pattern.compile("^[a-zA-Z]([a-zA-Z0-9]){4,19}$");
-        reg_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,reg_username_textInput,p_reg_username));
-        auth_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,auth_username_textInput,p_reg_username));
+        reg_password_layout = (TextInputLayout)findViewById(R.id.reg_passwordInput);
+        auth_password_layout = (TextInputLayout)findViewById(R.id.auth_passwordInput);
+
+        Pattern p_username = Pattern.compile("^[a-zA-Z]([a-zA-Z0-9]){4,19}$");
+        Pattern p_password = Pattern.compile("^([a-zA-Z0-9*-+()!&_\\S]){5,15}([0-9]){1,5}$");
+        //^([a-zA-Z0-9*+!&?()]){9,19}$
+        reg_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,reg_username_textInput,p_username));
+        auth_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,auth_username_textInput,p_username));
+        reg_password_textInput.addTextChangedListener(new addListenerOnTextChange(this,reg_password_textInput,p_password));
+        auth_password_textInput.addTextChangedListener(new addListenerOnTextChange(this,auth_password_textInput,p_password));
         Button btnChoice = (Button) findViewById(R.id.choice_Button);
         btnChoice.setOnClickListener(viewClickListener);
     }
@@ -161,23 +182,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
-
-    //SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
-    //SharedPreferences.Editor edit = sp.edit(); // редактирование данных
-    //Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>()); // множество строк, в котором хранятся логин/пароль
-
-
     public void onClickSignUpButton(View view)
     {
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor edit = sp.edit(); // редактирование данных
-        Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>()); // множество строк, в котором хранятся логин/пароль
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor edit = sp.edit();
+        Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>());
         TextInputEditText username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
-        String entered_username = username_textInput.getText().toString(); // присваиваем значение поля Логин
-        Boolean isUsed = false; // проверка на использование логина
+        String entered_username = username_textInput.getText().toString();
+        Boolean isUsed = false;
 
-        for (String s: userInfo_set) // проходим по списку. если встречается, то выводим сообщение об уже использовании
+        for (String s: userInfo_set)
         {
             String username = s.substring(0,s.indexOf("/"));
             if (username.equals(entered_username))
@@ -191,19 +205,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else
         {
-            if (isRegUsernameRight)
+            if (isUsernameRight && isPasswordRight)
             {
                 TextInputEditText password_textInput = (TextInputEditText)findViewById(R.id.reg_password_editText);
                 String userInfo = entered_username +"/"+ password_textInput.getText().toString();
                 userInfo_set.add(userInfo);
-                edit.putStringSet(preferences_userInfo_set,userInfo_set); // куда и что сохраняем
-                edit.apply(); // вступление изменений в силу
+                edit.putStringSet(preferences_userInfo_set,userInfo_set);
+                edit.apply();
                 Toast.makeText(getApplicationContext(),"You are signed up!",Toast.LENGTH_LONG).show();
                 reg_form.setVisibility(View.INVISIBLE);
             }
             else
             {
-                Toast.makeText(getApplicationContext(),"Wrong Login!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Wrong login or password!",Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -232,12 +246,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void onClickSignInButton(View view) {
-        // сделать получение значений из userInfo_set
         SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
-        //SharedPreferences.Editor edit = sp.edit(); // редактирование данных
-        Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>()); // множество строк, в котором хранятся логин/пароль
+        Set<String> userInfo_set = sp.getStringSet(preferences_userInfo_set,new HashSet<String>());
         TextInputEditText auth_loginText = (TextInputEditText) findViewById(R.id.auth_username_editText);
-        String entered_login = auth_loginText.getText().toString(); // присваиваем значение поля Логин
+        String entered_login = auth_loginText.getText().toString();
         TextInputEditText auth_passwordText = (TextInputEditText) findViewById(R.id.auth_password_editText);
         String entered_password = auth_passwordText.getText().toString();
         boolean isFound = false;
@@ -249,8 +261,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (login.equals(entered_login) && password.equals(entered_password))
             {
                 isFound = true;
-                auth_form.setVisibility(View.INVISIBLE);
-                Toast.makeText(getApplicationContext(),"Hello, " + login,Toast.LENGTH_LONG).show();
             }
         }
 
@@ -259,12 +269,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(getApplicationContext(),"Wrong login or password",Toast.LENGTH_SHORT).show();
         }
 
-
-        /*
-        TextInputEditText username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
-        String entered_username = username_textInput.getText().toString(); // присваиваем значение поля Логин
-        Boolean isUsed = false; // проверка на использование логина
-        */
+        else
+        {
+            if (isUsernameRight && isPasswordRight)
+            {
+                Toast.makeText(getApplicationContext(),"You are authorized!",Toast.LENGTH_LONG).show();
+                auth_form.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),"Wrong password!",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public class addListenerOnTextChange implements TextWatcher {
@@ -291,16 +307,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             Matcher m = p.matcher(mEdittextview.getText().toString());
-            isRegUsernameRight = m.matches();
-            if (isRegUsernameRight)
+            isUsernameRight = m.matches();
+            isPasswordRight = m.matches();
+            if (isUsernameRight && isPasswordRight)
             {
                 mEdittextview.setError(null);
                 reg_username_layout.setErrorEnabled(false);
+                auth_username_layout.setErrorEnabled(false);
+                reg_password_layout.setErrorEnabled(false);
+                auth_password_layout.setErrorEnabled(false);
             }
             else
             {
                 reg_username_layout.setErrorEnabled(true);
-                mEdittextview.setError("Login doesn't match pattern!");
+                auth_username_layout.setErrorEnabled(true);
+                reg_password_layout.setErrorEnabled(true);
+                auth_password_layout.setErrorEnabled(true);
+                mEdittextview.setError("Field doesn't match pattern!");
             }
 
         }

@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //Лабораторные работы 4,5 сданы Журавлев, Касимов
+//Лабораторные работы 2,3 сданы Журавлев, Касимов
 
 
 

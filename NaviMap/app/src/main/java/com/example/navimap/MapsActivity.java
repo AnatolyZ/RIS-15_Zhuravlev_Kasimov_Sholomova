@@ -1,12 +1,17 @@
 package com.example.navimap;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -32,7 +37,6 @@ import java.util.regex.Pattern;
 //Лабораторные работы 2,3 сданы Журавлев, Касимов
 
 
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -54,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextInputLayout auth_username_layout;
     TextInputLayout auth_password_layout;
 
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 10;
     //static public Context mContext;
     //static SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
     //static SharedPreferences.Editor edit = sp.edit();
@@ -73,23 +78,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         auth_form = findViewById(R.id.auth_form_include);
         auth_form.setVisibility(View.INVISIBLE);
 
-        reg_username_textInput = (TextInputEditText)findViewById(R.id.reg_username_editText);
-        auth_username_textInput = (TextInputEditText)findViewById(R.id.auth_username_editText);
-        reg_password_textInput = (TextInputEditText)findViewById(R.id.reg_password_editText);
-        auth_password_textInput = (TextInputEditText)findViewById(R.id.auth_password_editText);
+        reg_username_textInput = (TextInputEditText) findViewById(R.id.reg_username_editText);
+        auth_username_textInput = (TextInputEditText) findViewById(R.id.auth_username_editText);
+        reg_password_textInput = (TextInputEditText) findViewById(R.id.reg_password_editText);
+        auth_password_textInput = (TextInputEditText) findViewById(R.id.auth_password_editText);
 
-        reg_username_layout = (TextInputLayout)findViewById(R.id.reg_usernameInput);
-        auth_username_layout = (TextInputLayout)findViewById(R.id.auth_usernameInput);
-        reg_password_layout = (TextInputLayout)findViewById(R.id.reg_passwordInput);
-        auth_password_layout = (TextInputLayout)findViewById(R.id.auth_passwordInput);
+        reg_username_layout = (TextInputLayout) findViewById(R.id.reg_usernameInput);
+        auth_username_layout = (TextInputLayout) findViewById(R.id.auth_usernameInput);
+        reg_password_layout = (TextInputLayout) findViewById(R.id.reg_passwordInput);
+        auth_password_layout = (TextInputLayout) findViewById(R.id.auth_passwordInput);
 
         Pattern p_username = Pattern.compile("^[a-zA-Z]([a-zA-Z0-9]){4,19}$");
         Pattern p_password = Pattern.compile("^([a-zA-Z0-9*-+()!&_\\S]){5,15}([0-9]){1,5}$");
         //^([a-zA-Z0-9*+!&?()]){9,19}$
-        reg_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,reg_username_textInput,p_username));
-        auth_username_textInput.addTextChangedListener(new addListenerOnTextChange(this,auth_username_textInput,p_username));
-        reg_password_textInput.addTextChangedListener(new addListenerOnTextChange(this,reg_password_textInput,p_password));
-        auth_password_textInput.addTextChangedListener(new addListenerOnTextChange(this,auth_password_textInput,p_password));
+        reg_username_textInput.addTextChangedListener(new addListenerOnTextChange(this, reg_username_textInput, p_username));
+        auth_username_textInput.addTextChangedListener(new addListenerOnTextChange(this, auth_username_textInput, p_username));
+        reg_password_textInput.addTextChangedListener(new addListenerOnTextChange(this, reg_password_textInput, p_password));
+        auth_password_textInput.addTextChangedListener(new addListenerOnTextChange(this, auth_password_textInput, p_password));
         Button btnChoice = (Button) findViewById(R.id.choice_Button);
         btnChoice.setOnClickListener(viewClickListener);
     }
@@ -160,6 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });*/
         popupMenu.show();
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -169,19 +175,80 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
         //LatLng location = new LatLng(-34, 151);
-        if(lat != 0.0 || lng != 0.0) {
+        if (lat != 0.0 || lng != 0.0) {
             LatLng location = new LatLng(lat, lng);
             mMap.addMarker(new MarkerOptions().position(location).title("Marker in " + nameOfPlace));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
         }
+        //Проверка и запрос разрешения на использование местоположения
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION))
+            {
+                new AlertDialog.Builder(this)
+                        .setTitle("Location Permission Needed")
+                        .setMessage("This app needs the Location permission, please accept to use location functionality")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(MapsActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+            }
+            else
+            {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+
+
+
+        }
+        else
+        {
+            mMap.setMyLocationEnabled(true);
+        }
+
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if (ActivityCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED)
+                    {
+                        mMap.setMyLocationEnabled(true);
+                    }
+                }
+                else
+                {
+                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
+    }
 
     public void onClickSignUpButton(View view)
     {

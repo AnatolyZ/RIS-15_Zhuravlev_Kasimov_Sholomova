@@ -14,4 +14,5 @@
     <string name="menu_gs">Заправка</string>
     <string name="menu_pharmacy">Аптека</string>
     <string name="menu_hospital">Больница</string>
+    <string name="menu_location">Моё местоположение</string>>
 </resources>

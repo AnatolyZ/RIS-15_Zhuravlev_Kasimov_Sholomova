@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +24,20 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,6 +51,12 @@ import java.util.regex.Pattern;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private GeoDataClient mGeoDataClient;
+    private PlaceDetectionClient mPlaceDetectionClient;
+
+    // The entry point to the Fused Location Provider.
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
     private double lng = 0.0;
     private double lat = 0.0;
     private String nameOfPlace = "";
@@ -59,6 +76,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextInputLayout auth_password_layout;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 10;
+    private Location mLastKnownLocation;
     //static public Context mContext;
     //static SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
     //static SharedPreferences.Editor edit = sp.edit();
@@ -97,6 +115,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         auth_password_textInput.addTextChangedListener(new addListenerOnTextChange(this, auth_password_textInput, p_password));
         Button btnChoice = (Button) findViewById(R.id.choice_Button);
         btnChoice.setOnClickListener(viewClickListener);
+
+        // Construct a GeoDataClient
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // Construct a PlaceDetectionClient
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+
+        // Construct a FusedLocationProviderClient
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
 
     View.OnClickListener viewClickListener = new View.OnClickListener() {
@@ -118,7 +146,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-
+                            case R.id.menu0: {
+                                Toast.makeText(getApplicationContext(),
+                                        "Моё местоположение",
+                                        Toast.LENGTH_SHORT).show();
+                                getDeviceLocation();
+                                showDeviceLocation();
+                                return true;
+                            }
                             case R.id.menu1: {
                                 Toast.makeText(getApplicationContext(),
                                         "Кинотеатр",
@@ -127,6 +162,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 lng = 56.248481;
                                 nameOfPlace = "Кинотеатр «Кристалл»";
                                 onMapReady(mMap);
+                                LatLng location = new LatLng(lat, lng);
+                                mMap.addMarker(new MarkerOptions().position(location).title("Marker in " + nameOfPlace));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
                                 return true;
                             }
                             case R.id.menu2:
@@ -180,13 +218,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        //LatLng location = new LatLng(-34, 151);
-        if (lat != 0.0 || lng != 0.0) {
-            LatLng location = new LatLng(lat, lng);
-            mMap.addMarker(new MarkerOptions().position(location).title("Marker in " + nameOfPlace));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
-        }
+        // Add a marker and move the camera
+//        LatLng location = new LatLng(-34, 151);
+//        if (lat != 0.0 || lng != 0.0) {
+//            LatLng location = new LatLng(lat, lng);
+//            mMap.addMarker(new MarkerOptions().position(location).title("Marker in " + nameOfPlace));
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
+//        }
+
         //Проверка и запрос разрешения на использование местоположения
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
@@ -222,7 +261,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else
         {
             mMap.setMyLocationEnabled(true);
+            getDeviceLocation();
         }
+
+
 
     }
 
@@ -247,6 +289,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 return;
             }
+        }
+    }
+
+    /////
+    private void getDeviceLocation() {
+    /*
+     * Get the best and most recent location of the device, which may be null in rare
+     * cases when a location is not available.
+     */
+        try {
+            Task locationResult = mFusedLocationProviderClient.getLastLocation();
+            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        Location Temp_mLastKnownLocation = (Location) task.getResult();
+                        if (Temp_mLastKnownLocation != null)
+                        {
+                            mLastKnownLocation = Temp_mLastKnownLocation;
+                        }
+
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(),"Fail getDeviceLocation",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch(SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    /////
+    private void showDeviceLocation()
+    {
+        if (mLastKnownLocation != null)
+        {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude()), 15));
+            LatLng MyLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(MyLocation).title("Marker in your location"));
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(),"Can't show your location",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -397,4 +488,3 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 }
-

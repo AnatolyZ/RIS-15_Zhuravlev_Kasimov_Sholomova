@@ -173,8 +173,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.menu3:
+                                mMap.clear();
+                                String hospital = "hospital";
+                                getDeviceLocation();
+                                double lat = mLastKnownLocation.getLatitude();
+                                double lng = mLastKnownLocation.getLongitude();
+                                //String url = getUrl(lat,lng,hospital);
+                                Object dataTransfer[] = new Object[4];
+                                dataTransfer[0] = mMap;
+                                //dataTransfer[1] = url;
+
+                                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                                getNearbyPlacesData.execute(dataTransfer);
                                 Toast.makeText(getApplicationContext(),
-                                        "Больница",
+                                        "Ближайшая больница",
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.menu4:

@@ -77,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 10;
     private Location mLastKnownLocation;
+    double searchRadius = 2000;
     //static public Context mContext;
     //static SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
     //static SharedPreferences.Editor edit = sp.edit();
@@ -178,10 +179,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 getDeviceLocation();
                                 double lat = mLastKnownLocation.getLatitude();
                                 double lng = mLastKnownLocation.getLongitude();
-                                //String url = getUrl(lat,lng,hospital);
+                                String url = getUrl(lat,lng,hospital);
                                 Object dataTransfer[] = new Object[4];
                                 dataTransfer[0] = mMap;
-                                //dataTransfer[1] = url;
+                                dataTransfer[1] = url;
 
                                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                                 getNearbyPlacesData.execute(dataTransfer);
@@ -304,7 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /////
+
     private void getDeviceLocation() {
     /*
      * Get the best and most recent location of the device, which may be null in rare
@@ -353,6 +354,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private String getUrl(double lat, double lng, String nearbyPlace)
+    {
+        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlaceUrl.append("location="+lat+","+lng);
+        googlePlaceUrl.append("&radius="+searchRadius);
+        googlePlaceUrl.append("&type="+nearbyPlace);
+        googlePlaceUrl.append("&sensor=true");
+        googlePlaceUrl.append("&key="+"AIzaSyAFvBMwGtCsRB4yYZQVO1GurwjQxTXFOFQ");
+
+        Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
+
+        return googlePlaceUrl.toString();
+    }
+
+
     public void onClickSignUpButton(View view)
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -392,6 +408,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
+
 
     public void onClickSignUpTestButton(View view) {
         auth_form.setVisibility(View.INVISIBLE);

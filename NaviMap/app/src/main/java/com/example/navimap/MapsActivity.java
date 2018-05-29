@@ -183,6 +183,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Object dataTransfer[] = new Object[4];
                                 dataTransfer[0] = mMap;
                                 dataTransfer[1] = url;
+                                dataTransfer[2] = lat;
+                                dataTransfer[3] = lng;
 
                                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                                 getNearbyPlacesData.execute(dataTransfer);

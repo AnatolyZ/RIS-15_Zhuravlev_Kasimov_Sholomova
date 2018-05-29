@@ -1,6 +1,7 @@
 package com.example.navimap;
 
 
+import android.location.Location;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,18 +17,22 @@ import java.util.List;
 /**
  * Created by SorA on 5/21/2018.
  */
-//  2 комит Саня
+
 public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     String googlePlacesData;
     GoogleMap mMap;
     String url;
+    double userLat;
+    double userLng;
     HashMap<String, String> closestPlace;
 
     @Override
     protected String doInBackground(Object... objects) {
         mMap = (GoogleMap) objects[0];
         url = (String) objects[1];
+        userLat = (double) objects[2];
+        userLng = (double) objects[3];
 
         DownloadURL downloadURL = new DownloadURL();
         try {
@@ -68,5 +73,30 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
         }
     }
+
+    private HashMap<String,String> getClosestPlace(List<HashMap<String,String>> nearbyPlacesList)
+    {
+        float minDistance = Float.MAX_VALUE;
+        closestPlace = null;
+
+        for (int i = 0; i < nearbyPlacesList.size() ; i++)
+        {
+            HashMap<String,String> googlePlace = nearbyPlacesList.get(i);
+            double lat = Double.parseDouble(googlePlace.get("lat"));
+            double lng = Double.parseDouble(googlePlace.get("lng"));
+            float results[] = new float[10];
+            Location.distanceBetween(userLng, userLat, lng, lat, results);
+            float distance = results[0];
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestPlace = googlePlace;
+            }
+
+        }
+
+        return closestPlace;
+    }
+
 }
 

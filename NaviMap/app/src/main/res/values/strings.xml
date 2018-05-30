@@ -9,8 +9,8 @@
     <string name="passwordText">Password</string>
     <string name="enterText">Enter login and password: </string>
     
-    <string name="menu_cinema">Кинотеатр</string>
-    <string name="menu_shop">Магазин</string>
+    <string name="menu_cinema">Банкомат</string>
+    <string name="menu_shop">Пекарня</string>
     <string name="menu_gs">Заправка</string>
     <string name="menu_pharmacy">Аптека</string>
     <string name="menu_hospital">Больница</string>

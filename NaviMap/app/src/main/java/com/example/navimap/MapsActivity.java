@@ -135,6 +135,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    public void choicePlace(String place)
+    {
+        mMap.clear();
+        getDeviceLocation();
+        double lat = mLastKnownLocation.getLatitude();
+        double lng = mLastKnownLocation.getLongitude();
+        String url = getUrl(lat,lng,place);
+        Object dataTransfer[] = new Object[4];
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = url;
+        dataTransfer[2] = lat;
+        dataTransfer[3] = lng;
+
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        getNearbyPlacesData.execute(dataTransfer);
+    }
+
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.inflate(R.menu.menu_p);
@@ -156,24 +173,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 return true;
                             }
                             case R.id.menu1: {
+                                choicePlace("atm");
                                 Toast.makeText(getApplicationContext(),
-                                        "Кинотеатр",
+                                        "Ближайший банкомат",
                                         Toast.LENGTH_SHORT).show();
+                                /*
                                 lat = 57.999956;
                                 lng = 56.248481;
                                 nameOfPlace = "Кинотеатр «Кристалл»";
                                 onMapReady(mMap);
                                 LatLng location = new LatLng(lat, lng);
                                 mMap.addMarker(new MarkerOptions().position(location).title("Marker in " + nameOfPlace));
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 17));*/
                                 return true;
                             }
                             case R.id.menu2:
+                                choicePlace("gas_station");
                                 Toast.makeText(getApplicationContext(),
-                                        "Заправка",
+                                        "Ближайшая АЗС",
                                         Toast.LENGTH_SHORT).show();
                                 return true;
-                            case R.id.menu3:
+                            case R.id.menu3:/*
                                 mMap.clear();
                                 String hospital = "hospital";
                                 getDeviceLocation();
@@ -187,19 +207,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 dataTransfer[3] = lng;
 
                                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                                getNearbyPlacesData.execute(dataTransfer);
+                                getNearbyPlacesData.execute(dataTransfer);*/
+                                choicePlace("hospital");
                                 Toast.makeText(getApplicationContext(),
                                         "Ближайшая больница",
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.menu4:
+                                choicePlace("pharmacy");
                                 Toast.makeText(getApplicationContext(),
-                                        "Аптека",
+                                        "Ближайшая аптека",
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.menu5:
+                                choicePlace("bakery");
                                 Toast.makeText(getApplicationContext(),
-                                        "Магазин",
+                                        "Ближайшая пекарня",
                                         Toast.LENGTH_SHORT).show();
                                 return true;
                             default:

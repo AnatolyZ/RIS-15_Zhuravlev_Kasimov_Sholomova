@@ -370,7 +370,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return googlePlaceUrl.toString();
     }
 
-
     public void onClickSignUpButton(View view)
     {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);

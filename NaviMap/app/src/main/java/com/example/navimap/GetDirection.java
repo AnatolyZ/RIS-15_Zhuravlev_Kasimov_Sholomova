@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class GetDirection extends AsyncTask<String, Void, List<List<HashMap<Stri
             for (HashMap<String, String> point : path) {
                 double lat = Double.parseDouble(point.get("lat"));
                 double lon = Double.parseDouble(point.get("lon"));
-                //Log.d("MapsActivity", "points_res = "+Double.toString(Double.parseDouble(point.get("lat"))));
+                Log.d("MapsActivity", "points_res = "+Double.toString(Double.parseDouble(point.get("lat"))));
 
                 points.add(new LatLng(lat, lon));
             }
@@ -67,6 +68,29 @@ public class GetDirection extends AsyncTask<String, Void, List<List<HashMap<Stri
             }
         } else {
             Log.d("MapsActivity", "mMap null");
+        }
+    }
+
+    public class TaskRequestDirections extends AsyncTask<Object, Void, String> {
+
+        @Override
+        protected String doInBackground(Object... objects) {
+            mMap =(GoogleMap)objects[0];
+            DownloadURL downloadURL = new DownloadURL();
+            try {
+                directionData = downloadURL.readUrl((String) objects[1]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return  directionData;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            //Parse json here
+            GetDirection getDirection = new GetDirection();
+            getDirection.execute(s);
         }
     }
 }

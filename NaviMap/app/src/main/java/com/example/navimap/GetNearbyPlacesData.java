@@ -3,6 +3,7 @@ package com.example.navimap;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,6 +52,17 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         nearbyPlacesList = dataParser.parse(s);
         showNearbyPlaces(nearbyPlacesList);
         showClosestPlace(nearbyPlacesList);
+
+        double lat = Double.parseDouble(closestPlace.get("lat"));
+        double lng = Double.parseDouble(closestPlace.get("lng"));
+        String url = getDirectionUrl(userLat, userLng, lat, lng);
+        Object dataTransfer[] = new Object[2];
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = url;
+        //dataTransfer[2] = lat;
+        //dataTransfer[3] = lng;
+        GetDirection.TaskRequestDirections requestDirections = new GetDirection().new TaskRequestDirections();
+        requestDirections.execute(dataTransfer);
     }
 
     private void showNearbyPlaces(List<HashMap<String,String>> nearbyPlacesList)
@@ -118,6 +130,18 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
     }
 
+    private String getDirectionUrl(double latUser, double lngUser, double latDestination, double lngDestination)
+    {
+        StringBuilder googleDirectionUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        googleDirectionUrl.append("origin="+latUser+","+lngUser);
+        googleDirectionUrl.append("&destination="+latDestination+","+lngDestination);
+        googleDirectionUrl.append("&sensor=false");
+        googleDirectionUrl.append("&mode=walking");
+        googleDirectionUrl.append("&key="+"AIzaSyAFvBMwGtCsRB4yYZQVO1GurwjQxTXFOFQ");
 
+        Log.d("MapsActivity", "directionUrl = "+googleDirectionUrl.toString());
+
+        return googleDirectionUrl.toString();
+    }
 }
 
